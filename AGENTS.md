@@ -50,10 +50,10 @@ npm run lint                      # lint both workspaces
 | completedAt | DateTime, nullable |
 | createdAt, updatedAt | DateTime |
 
-Note: SQLite has no native enums, so status/priority/category are stored as strings and enforced with Zod.
+Enums are Prisma enums (supported on SQLite since Prisma 6.2) and are also validated with Zod.
 
 ## 6. API contract (`/api`)
-- `GET /tasks?search=&status=&priority=&category=&sort=dueDate|priority|createdAt`
+- `GET /tasks?search=&status=&priority=&category=&sort=dueDate|priority|createdAt` (plus dashboard helpers `due=today|overdue|todayAndOverdue` and `completed=week`)
 - `GET /tasks/:id`, `POST /tasks`, `PATCH /tasks/:id`, `DELETE /tasks/:id`
 - `GET /stats` → `{ today, overdue, all, completedThisWeek }`
 - `GET /categories/counts` → `{ Work, Personal, Health, Shopping, Other }` (task counts)
