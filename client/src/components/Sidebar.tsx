@@ -3,6 +3,7 @@ import { useCategoryCounts } from '../hooks/useStats';
 import type { View } from '../hooks/useUrlState';
 import { CATEGORIES, type Category } from '../lib/api';
 import { CategoryDot } from './Badges';
+import { ThemeSidebarButton } from './ThemeToggle';
 
 const items: { view: View; label: string; Icon: typeof List }[] = [
   { view: 'dashboard', label: 'Dashboard', Icon: LayoutGrid },
@@ -83,6 +84,10 @@ export function Sidebar({ view, onView, collapsed, category, onCategory }: Props
           </ul>
         </section>
       )}
+
+      <div className="mt-auto">
+        <ThemeSidebarButton collapsed={collapsed} />
+      </div>
     </aside>
   );
 }
