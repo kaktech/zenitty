@@ -1,0 +1,112 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Design tokens. Components must use the Tailwind theme names, never raw hex. */
+:root {
+  --page: #e3f1ea;
+  --surface: #ffffff;
+  --subtle: #f4faf7;
+  --row: #f6fbf8;
+  --line: #d3e6dc;
+  --line-input: #c5ddd0;
+  --primary: #2f6b4f;
+  --primary-fg: #ffffff;
+  --primary-soft: #1e4d38;
+  --ink: #17332a;
+  --ink-2: #34503f;
+  --muted: #4f6b60;
+  --danger: #b23a22;
+  --danger-soft: #fff1ee;
+  --danger-line: #efb8aa;
+  --fab-shadow: rgba(47, 107, 79, 0.45);
+
+  --stat-today-bg: #bfe3cf;
+  --stat-today-fg: #1e4d38;
+  --stat-overdue-bg: #f8d9d0;
+  --stat-overdue-fg: #7a2e1d;
+  --stat-all-bg: #d7ecd9;
+  --stat-all-fg: #1e4d38;
+  --stat-done-bg: #d9d2f0;
+  --stat-done-fg: #43357a;
+
+  --prio-high-bg: #f8d9d0;
+  --prio-high-fg: #7a2e1d;
+  --prio-high-line: #b23a22;
+  --prio-medium-bg: #fbe9c4;
+  --prio-medium-fg: #6e4a0b;
+  --prio-medium-line: #9a6a12;
+  --prio-low-bg: #d7ecd9;
+  --prio-low-fg: #1e4d38;
+  --prio-low-line: #2f6b4f;
+
+  --cat-work: #2f6b4f;
+  --cat-personal: #7b6bc0;
+  --cat-health: #d0664e;
+  --cat-shopping: #c9962b;
+  --cat-other: #6f8a7e;
+}
+
+.dark {
+  --page: #0f1a16;
+  --surface: #172520;
+  --subtle: #1b2c26;
+  --row: #1a2b25;
+  --line: #27392f;
+  --line-input: #34493e;
+  --primary: #8fd1b0;
+  --primary-fg: #0f1a16;
+  --primary-soft: #bfe3cf;
+  --ink: #e6f2ec;
+  --ink-2: #c5d9cf;
+  --muted: #9db5ab;
+  --danger: #f2a08b;
+  --danger-soft: #2a1b18;
+  --danger-line: #6b3a30;
+  --fab-shadow: rgba(143, 209, 176, 0.3);
+
+  --stat-today-bg: #24473a;
+  --stat-today-fg: #bfe3cf;
+  --stat-overdue-bg: #4a2e2a;
+  --stat-overdue-fg: #f8d9d0;
+  --stat-all-bg: #22392e;
+  --stat-all-fg: #d7ecd9;
+  --stat-done-bg: #332d4a;
+  --stat-done-fg: #d9d2f0;
+
+  --prio-high-bg: #4a2e2a;
+  --prio-high-fg: #f8d9d0;
+  --prio-high-line: #f2a08b;
+  --prio-medium-bg: #4a3b1a;
+  --prio-medium-fg: #fbe9c4;
+  --prio-medium-line: #e0b453;
+  --prio-low-bg: #22392e;
+  --prio-low-fg: #d7ecd9;
+  --prio-low-line: #8fd1b0;
+
+  --cat-work: #8fd1b0;
+  --cat-personal: #a99bea;
+  --cat-health: #e88a72;
+  --cat-shopping: #e0b453;
+  --cat-other: #8fa79b;
+}
+
+@layer base {
+  html {
+    color-scheme: light;
+  }
+  html.dark {
+    color-scheme: dark;
+  }
+  body {
+    @apply bg-page font-sans text-ink antialiased;
+    margin: 0;
+    overflow-x: hidden;
+  }
+  button {
+    white-space: nowrap;
+  }
+  :focus-visible {
+    @apply outline-none ring-2 ring-primary ring-offset-2 ring-offset-page;
+  }
+}
