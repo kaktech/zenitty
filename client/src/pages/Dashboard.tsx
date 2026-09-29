@@ -8,6 +8,7 @@ import { Modal } from '../components/Modal';
 import { SearchInput } from '../components/SearchInput';
 import { Sidebar } from '../components/Sidebar';
 import { StatCards } from '../components/StatCards';
+import { ThemeIconButton } from '../components/ThemeToggle';
 import { TaskList } from '../components/TaskList';
 import { useBreakpoint } from '../hooks/useBreakpoint';
 import { useStats } from '../hooks/useStats';
@@ -58,6 +59,7 @@ function MobileHome() {
         <div className="flex-1">
           <Greeting short />
         </div>
+        <ThemeIconButton />
       </header>
 
       <SearchInput className="mt-4" value={url.filters.q} onChange={(v) => url.setFilter('q', v || null)} />
