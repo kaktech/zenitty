@@ -63,7 +63,11 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   try {
     res = await fetch(`${BASE}${path}`, {
       ...init,
-      headers: { 'Content-Type': 'application/json', ...init?.headers },
+      headers: {
+        'Content-Type': 'application/json',
+        'X-TZ-Offset': String(new Date().getTimezoneOffset()),
+        ...init?.headers,
+      },
     });
   } catch {
     throw new ApiError('Cannot reach the server. Is it running?', 0);
