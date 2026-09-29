@@ -17,8 +17,8 @@ export function TaskRow({ task, selected, short, onOpen, onToggle }: Props) {
 
   return (
     <li
-      className={`flex items-center gap-1 rounded-row border-2 bg-surface pl-2 pr-3 md:bg-row ${
-        selected ? 'border-primary' : 'border-transparent'
+      className={`flex items-center gap-1 rounded-row border-2 bg-surface pl-2 pr-3 transition-colors md:bg-row ${
+        selected ? 'border-primary' : 'border-transparent md:hover:border-line-input'
       }`}
     >
       <TaskCheck done={done} onToggle={onToggle} title={task.title} />
