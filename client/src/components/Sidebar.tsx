@@ -1,7 +1,7 @@
 import { CalendarDays, CheckCircle2, Check, LayoutGrid, List } from 'lucide-react';
 import { useCategoryCounts } from '../hooks/useStats';
 import type { View } from '../hooks/useUrlState';
-import { CATEGORIES } from '../lib/api';
+import { CATEGORIES, type Category } from '../lib/api';
 import { CategoryDot } from './Badges';
 
 const items: { view: View; label: string; Icon: typeof List }[] = [
@@ -16,9 +16,11 @@ interface Props {
   onView: (v: View) => void;
   /** Icon-only (tablet). */
   collapsed: boolean;
+  category?: Category;
+  onCategory: (c: Category | null) => void;
 }
 
-export function Sidebar({ view, onView, collapsed }: Props) {
+export function Sidebar({ view, onView, collapsed, category, onCategory }: Props) {
   const { data: counts } = useCategoryCounts();
 
   return (
@@ -63,10 +65,19 @@ export function Sidebar({ view, onView, collapsed }: Props) {
           </h2>
           <ul className="flex flex-col">
             {CATEGORIES.map((c) => (
-              <li key={c} className="flex min-h-[44px] items-center gap-3 px-3 text-[15px] font-bold text-ink">
-                <CategoryDot category={c} size={10} />
-                <span className="flex-1">{c}</span>
-                <span className="text-meta-lg text-muted">{counts?.[c] ?? ''}</span>
+              <li key={c}>
+                <button
+                  type="button"
+                  aria-pressed={category === c}
+                  onClick={() => onCategory(category === c ? null : c)}
+                  className={`flex min-h-[44px] w-full items-center gap-3 rounded-ctl px-3 text-left text-[15px] font-bold text-ink hover:bg-subtle ${
+                    category === c ? 'bg-subtle' : ''
+                  }`}
+                >
+                  <CategoryDot category={c} size={10} />
+                  <span className="flex-1">{c}</span>
+                  <span className="text-meta-lg text-muted">{counts?.[c] ?? ''}</span>
+                </button>
               </li>
             ))}
           </ul>

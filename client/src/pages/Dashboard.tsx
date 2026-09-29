@@ -1,15 +1,19 @@
-import { Plus } from 'lucide-react';
-import { Button } from '../components/Button';
+import { Plus, SlidersHorizontal } from 'lucide-react';
+import { useState } from 'react';
+import { Button, IconButton } from '../components/Button';
 import { DetailPanel } from '../components/DetailPanel';
-import { Greeting, Avatar } from '../components/Greeting';
+import { FilterFields, FilterPopover, SortSelect, StatusChips } from '../components/FilterControls';
+import { Avatar, Greeting } from '../components/Greeting';
 import { Modal } from '../components/Modal';
+import { SearchInput } from '../components/SearchInput';
 import { Sidebar } from '../components/Sidebar';
 import { StatCards } from '../components/StatCards';
 import { TaskList } from '../components/TaskList';
 import { useBreakpoint } from '../hooks/useBreakpoint';
 import { useStats } from '../hooks/useStats';
 import { useUrlState } from '../hooks/useUrlState';
-import { listQuery, statTitle, viewTitle } from '../lib/views';
+import { hasActiveFilters } from '../lib/filters';
+import { fullQuery, statTitle, viewTitle } from '../lib/views';
 import { AddTaskPage } from './AddTaskPage';
 import { TaskDetailPage } from './TaskDetailPage';
 
@@ -27,9 +31,26 @@ export default function Dashboard() {
   return <WideLayout />;
 }
 
-function MobileHome() {
+function useListState() {
   const url = useUrlState();
-  const title = url.stat ? statTitle[url.stat] : viewTitle[url.view];
+  const title = url.filters.q
+    ? `Results for "${url.filters.q}"`
+    : url.stat
+      ? statTitle[url.stat]
+      : viewTitle[url.view];
+  return {
+    url,
+    title,
+    query: fullQuery(url.view, url.stat, url.filters),
+    onClearFilters: hasActiveFilters(url.filters) ? url.clearFilters : undefined,
+  };
+}
+
+function MobileHome() {
+  const { url, title, query, onClearFilters } = useListState();
+  const [sheet, setSheet] = useState(false);
+  const activeCount = Number(!!url.filters.status) + Number(!!url.filters.priority) + Number(!!url.filters.category);
+
   return (
     <div className="min-h-screen bg-page px-5 pb-28 pt-5">
       <header className="flex items-center gap-3">
@@ -39,15 +60,26 @@ function MobileHome() {
         </div>
       </header>
 
+      <SearchInput className="mt-4" value={url.filters.q} onChange={(v) => url.setFilter('q', v || null)} />
+
       <div className="mt-5">
         <StatCards active={url.stat} onSelect={url.setStat} />
       </div>
 
       <section className="mt-6" aria-labelledby="list-title">
-        <h2 id="list-title" className="mb-3 text-[18px] font-extrabold text-ink">
-          {title}
-        </h2>
-        <TaskList query={listQuery(url.view, url.stat)} selectedId={null} short onOpen={url.openTask} />
+        <div className="mb-3 flex items-center justify-between">
+          <h2 id="list-title" className="text-[18px] font-extrabold text-ink">
+            {title}
+          </h2>
+          <IconButton
+            label={activeCount ? `Filters (${activeCount} active)` : 'Filters'}
+            onClick={() => setSheet(true)}
+            className="bg-surface"
+          >
+            <SlidersHorizontal size={18} strokeWidth={2} aria-hidden="true" />
+          </IconButton>
+        </div>
+        <TaskList query={query} selectedId={null} short onOpen={url.openTask} onClearFilters={onClearFilters} />
       </section>
 
       <button
@@ -58,16 +90,40 @@ function MobileHome() {
       >
         <Plus size={28} strokeWidth={2} aria-hidden="true" />
       </button>
+
+      {sheet && (
+        <Modal title="Filters and sort" variant="sheet" onClose={() => setSheet(false)}>
+          <h2 className="mb-4 text-[18px] font-extrabold text-ink">Filters and sort</h2>
+          <div className="space-y-5">
+            <div>
+              <p className="mb-2 text-label uppercase text-muted">Status</p>
+              <StatusChips filters={url.filters} onChange={url.setFilter} />
+            </div>
+            <FilterFields filters={url.filters} onChange={url.setFilter} />
+            <div>
+              <p className="mb-2 text-label uppercase text-muted">Sort</p>
+              <SortSelect filters={url.filters} onChange={url.setFilter} />
+            </div>
+          </div>
+          <div className="mt-6 flex gap-3">
+            <Button variant="outline" className="flex-1" onClick={url.clearFilters}>
+              Reset
+            </Button>
+            <Button className="flex-1" onClick={() => setSheet(false)}>
+              Done
+            </Button>
+          </div>
+        </Modal>
+      )}
     </div>
   );
 }
 
 function WideLayout() {
   const bp = useBreakpoint();
-  const url = useUrlState();
+  const { url, title, query, onClearFilters } = useListState();
   const desktop = bp === 'desktop';
   const { data: stats } = useStats();
-  const title = url.stat ? statTitle[url.stat] : viewTitle[url.view];
   const dueToday = stats ? ` · ${stats.today} ${stats.today === 1 ? 'task' : 'tasks'} due today` : '';
 
   const panel = url.task && (
@@ -76,13 +132,24 @@ function WideLayout() {
 
   return (
     <div className="flex min-h-screen">
-      <Sidebar view={url.view} onView={url.setView} collapsed={!desktop} />
+      <Sidebar
+        view={url.view}
+        onView={url.setView}
+        collapsed={!desktop}
+        category={url.filters.category}
+        onCategory={(c) => url.setFilter('category', c)}
+      />
 
       <main className="min-w-0 flex-1 p-6 lg:p-8">
         <header className="flex flex-wrap items-center gap-4">
           <Avatar />
           <Greeting subtitle={dueToday} />
           <div className="ml-auto flex items-center gap-3">
+            <SearchInput
+              className="w-[300px] max-w-full"
+              value={url.filters.q}
+              onChange={(v) => url.setFilter('q', v || null)}
+            />
             <Button onClick={() => url.openTask('new')}>
               <Plus size={20} strokeWidth={2} aria-hidden="true" />
               Add task
@@ -95,10 +162,21 @@ function WideLayout() {
         </div>
 
         <section aria-labelledby="list-title" className="mt-6 rounded-card bg-surface p-6">
-          <h2 id="list-title" className="mb-4 text-[20px] font-extrabold text-ink">
-            {title}
-          </h2>
-          <TaskList query={listQuery(url.view, url.stat)} selectedId={url.task} onOpen={url.openTask} />
+          <div className="mb-4 flex flex-wrap items-center gap-x-4 gap-y-3">
+            <h2 id="list-title" className="text-[20px] font-extrabold text-ink">
+              {title}
+            </h2>
+            <StatusChips filters={url.filters} onChange={url.setFilter} />
+            <div className="ml-auto flex items-center gap-2">
+              <FilterPopover
+                filters={url.filters}
+                onChange={url.setFilter}
+                onClear={() => url.set({ priority: null, category: null }, true)}
+              />
+              <SortSelect filters={url.filters} onChange={url.setFilter} />
+            </div>
+          </div>
+          <TaskList query={query} selectedId={url.task} onOpen={url.openTask} onClearFilters={onClearFilters} />
         </section>
       </main>
 
@@ -107,9 +185,7 @@ function WideLayout() {
           aria-label="Task detail"
           className="sticky top-0 h-screen w-[360px] shrink-0 overflow-y-auto border-l border-line bg-surface p-7"
         >
-          {panel || (
-            <p className="mt-16 text-center text-meta-lg text-muted">Select a task to see its details.</p>
-          )}
+          {panel || <p className="mt-16 text-center text-meta-lg text-muted">Select a task to see its details.</p>}
         </aside>
       ) : (
         url.task && (

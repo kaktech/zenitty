@@ -1,5 +1,6 @@
 import type { TaskQuery } from './api';
 import type { Stat, View } from '../hooks/useUrlState';
+import type { Filters } from './filters';
 
 export const viewTitle: Record<View, string> = {
   dashboard: "Today's tasks",
@@ -35,4 +36,19 @@ export function viewQuery(view: View): TaskQuery {
     default:
       return {};
   }
+}
+
+/** Sidebar view / stat card plus the search, filter and sort controls. */
+export function fullQuery(view: View, stat: Stat | null, f: Filters): TaskQuery {
+  let base = listQuery(view, stat);
+  // Searching from the default dashboard should look across every task, not just today's.
+  if (f.q && view === 'dashboard' && !stat) base = {};
+  return {
+    ...base,
+    search: f.q || undefined,
+    status: f.status ?? base.status,
+    priority: f.priority,
+    category: f.category,
+    sort: f.sort,
+  };
 }
