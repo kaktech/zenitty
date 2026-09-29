@@ -51,14 +51,19 @@ export function Modal({ title, onClose, variant = 'center', children }: Props) {
 
   return createPortal(
     <div className={`fixed inset-0 z-50 flex justify-center ${position}`}>
-      <div className="absolute inset-0 bg-scrim" onClick={onClose} aria-hidden="true" />
+      <div className="absolute inset-0 animate-fade bg-scrim" onClick={onClose} aria-hidden="true" />
       <div
         ref={ref}
         role="dialog"
         aria-modal="true"
         aria-label={title}
-        className={`relative max-h-[90vh] w-full max-w-md overflow-y-auto bg-surface p-5 text-ink ${shape}`}
+        className={`relative max-h-[90vh] w-full max-w-md animate-sheet overflow-y-auto bg-surface p-5 text-ink ${shape} ${
+          variant === 'sheet' ? 'pb-[max(1.25rem,env(safe-area-inset-bottom))]' : ''
+        }`}
       >
+        {variant === 'sheet' && (
+          <div aria-hidden="true" className="mx-auto -mt-1 mb-4 h-1 w-10 rounded-full bg-line-input" />
+        )}
         {children}
       </div>
     </div>,
