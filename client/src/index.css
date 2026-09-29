@@ -20,6 +20,7 @@
   --danger-soft: #fff1ee;
   --danger-line: #efb8aa;
   --fab-shadow: rgba(47, 107, 79, 0.45);
+  --scrim: rgba(23, 51, 42, 0.45);
 
   --stat-today-bg: #bfe3cf;
   --stat-today-fg: #1e4d38;
@@ -64,6 +65,7 @@
   --danger-soft: #2a1b18;
   --danger-line: #6b3a30;
   --fab-shadow: rgba(143, 209, 176, 0.3);
+  --scrim: rgba(0, 0, 0, 0.6);
 
   --stat-today-bg: #24473a;
   --stat-today-fg: #bfe3cf;

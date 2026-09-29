@@ -51,7 +51,7 @@ export function Modal({ title, onClose, variant = 'center', children }: Props) {
 
   return createPortal(
     <div className={`fixed inset-0 z-50 flex justify-center ${position}`}>
-      <div className="absolute inset-0 bg-ink/40" onClick={onClose} aria-hidden="true" />
+      <div className="absolute inset-0 bg-scrim" onClick={onClose} aria-hidden="true" />
       <div
         ref={ref}
         role="dialog"
