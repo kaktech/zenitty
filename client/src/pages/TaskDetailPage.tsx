@@ -1,6 +1,7 @@
 import { Check, ChevronLeft, Pencil } from 'lucide-react';
 import { useState, type ReactNode } from 'react';
 import { Button, IconButton } from '../components/Button';
+import { CategoryDot, PriorityBadge } from '../components/Badges';
 import { ConfirmDialog } from '../components/ConfirmDialog';
 import { inputClass } from '../components/Field';
 import { ErrorState, ListSkeleton } from '../components/States';
@@ -46,6 +47,7 @@ export function TaskDetailPage({ id, onBack }: { id: string; onBack: () => void 
             <TaskForm
               key={task.updatedAt}
               formId="edit-form"
+              layout="page"
               task={task}
               onSubmit={(input) => update.mutate({ id: task.id, patch: input }, { onSuccess: () => setEditing(false) })}
             />
@@ -88,6 +90,15 @@ export function TaskDetailPage({ id, onBack }: { id: string; onBack: () => void 
                   </option>
                 ))}
               </select>
+            </Row>
+            <Row label="Priority">
+              <PriorityBadge priority={task.priority} />
+            </Row>
+            <Row label="Category">
+              <span className="flex items-center gap-2 text-[14px] font-extrabold text-ink">
+                <CategoryDot category={task.category} />
+                {task.category}
+              </span>
             </Row>
             <Row label="Due date">
               <span className="text-[14px] font-extrabold text-ink">

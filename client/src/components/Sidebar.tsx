@@ -1,5 +1,8 @@
 import { CalendarDays, CheckCircle2, Check, LayoutGrid, List } from 'lucide-react';
+import { useCategoryCounts } from '../hooks/useStats';
 import type { View } from '../hooks/useUrlState';
+import { CATEGORIES } from '../lib/api';
+import { CategoryDot } from './Badges';
 
 const items: { view: View; label: string; Icon: typeof List }[] = [
   { view: 'dashboard', label: 'Dashboard', Icon: LayoutGrid },
@@ -16,6 +19,8 @@ interface Props {
 }
 
 export function Sidebar({ view, onView, collapsed }: Props) {
+  const { data: counts } = useCategoryCounts();
+
   return (
     <aside
       className={`sticky top-0 flex h-screen shrink-0 flex-col gap-6 overflow-y-auto border-r border-line bg-surface p-5 ${
@@ -50,6 +55,23 @@ export function Sidebar({ view, onView, collapsed }: Props) {
           );
         })}
       </nav>
+
+      {!collapsed && (
+        <section aria-labelledby="categories-label">
+          <h2 id="categories-label" className="mb-2 px-3 text-label uppercase text-muted">
+            Categories
+          </h2>
+          <ul className="flex flex-col">
+            {CATEGORIES.map((c) => (
+              <li key={c} className="flex min-h-[44px] items-center gap-3 px-3 text-[15px] font-bold text-ink">
+                <CategoryDot category={c} size={10} />
+                <span className="flex-1">{c}</span>
+                <span className="text-meta-lg text-muted">{counts?.[c] ?? ''}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
     </aside>
   );
 }
