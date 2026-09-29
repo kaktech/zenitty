@@ -4,6 +4,7 @@ export type Theme = 'light' | 'dark';
 
 const KEY = 'zenitty-theme';
 const listeners = new Set<() => void>();
+// The <meta name="theme-color"> tag can't read CSS variables, so these mirror --page in index.css.
 const themeColor: Record<Theme, string> = { light: '#E3F1EA', dark: '#0F1A16' };
 
 const current = (): Theme => (document.documentElement.classList.contains('dark') ? 'dark' : 'light');

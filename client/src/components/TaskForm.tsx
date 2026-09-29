@@ -1,4 +1,3 @@
-import { Calendar } from 'lucide-react';
 import { useId, useState, type FormEvent } from 'react';
 import {
   CATEGORIES,
@@ -11,6 +10,7 @@ import {
 } from '../lib/api';
 import { defaultDueValue, fromInputValue, toInputValue } from '../lib/format';
 import { CategoryPills } from './CategoryPills';
+import { DateField } from './DateField';
 import { Field, inputClass } from './Field';
 import { PriorityControl } from './PriorityControl';
 
@@ -128,25 +128,7 @@ export function TaskForm({ task, formId, layout = 'panel', onSubmit }: Props) {
       )}
 
       <Field label="Due date">
-        {(id) => (
-          <div className="relative">
-            <input
-              id={id}
-              type="datetime-local"
-              className={`${inputClass} ${layout === 'page' ? 'pl-10' : ''}`}
-              value={due}
-              onChange={(e) => setDue(e.target.value)}
-            />
-            {layout === 'page' && (
-              <Calendar
-                size={18}
-                strokeWidth={2}
-                aria-hidden="true"
-                className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted"
-              />
-            )}
-          </div>
-        )}
+        {(id) => <DateField id={id} value={due} onChange={setDue} icon={layout === 'page'} />}
       </Field>
     </form>
   );

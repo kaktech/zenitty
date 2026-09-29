@@ -43,7 +43,7 @@ export function StatCards({ active, onSelect }: Props) {
                 selected ? 'border-primary' : 'border-transparent'
               }`}
             >
-              <span className="text-[14px] font-extrabold lg:text-[15px]">
+              <span className="text-[14px] font-extrabold">
                 <span className="lg:hidden">{c.short}</span>
                 <span className="max-lg:hidden">{c.label}</span>
               </span>

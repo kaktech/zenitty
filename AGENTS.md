@@ -52,6 +52,9 @@ npm run lint                      # lint both workspaces
 
 Enums are Prisma enums (supported on SQLite since Prisma 6.2) and are also validated with Zod.
 
+## URL state
+`task` (open task id or `new`), `view` (all | today | completed), `stat` (today | overdue | all | done), `q`, `status`, `priority`, `category`, `sort`. Keep filter state in the URL.
+
 ## 6. API contract (`/api`)
 - `GET /tasks?search=&status=&priority=&category=&sort=dueDate|priority|createdAt` (plus dashboard helpers `due=today|overdue|todayAndOverdue` and `completed=week`)
 - `GET /tasks/:id`, `POST /tasks`, `PATCH /tasks/:id`, `DELETE /tasks/:id`

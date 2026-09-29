@@ -22,6 +22,7 @@ export default {
         ink: v('ink'),
         'ink-2': v('ink-2'),
         muted: v('muted'),
+        scrim: v('scrim'),
         danger: v('danger'),
         'danger-soft': v('danger-soft'),
         'danger-line': v('danger-line'),
