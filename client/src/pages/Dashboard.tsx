@@ -4,10 +4,12 @@ import { DetailPanel } from '../components/DetailPanel';
 import { Greeting, Avatar } from '../components/Greeting';
 import { Modal } from '../components/Modal';
 import { Sidebar } from '../components/Sidebar';
+import { StatCards } from '../components/StatCards';
 import { TaskList } from '../components/TaskList';
 import { useBreakpoint } from '../hooks/useBreakpoint';
+import { useStats } from '../hooks/useStats';
 import { useUrlState } from '../hooks/useUrlState';
-import { viewQuery, viewTitle } from '../lib/views';
+import { listQuery, statTitle, viewTitle } from '../lib/views';
 import { AddTaskPage } from './AddTaskPage';
 import { TaskDetailPage } from './TaskDetailPage';
 
@@ -27,6 +29,7 @@ export default function Dashboard() {
 
 function MobileHome() {
   const url = useUrlState();
+  const title = url.stat ? statTitle[url.stat] : viewTitle[url.view];
   return (
     <div className="min-h-screen bg-page px-5 pb-28 pt-5">
       <header className="flex items-center gap-3">
@@ -36,11 +39,15 @@ function MobileHome() {
         </div>
       </header>
 
+      <div className="mt-5">
+        <StatCards active={url.stat} onSelect={url.setStat} />
+      </div>
+
       <section className="mt-6" aria-labelledby="list-title">
         <h2 id="list-title" className="mb-3 text-[18px] font-extrabold text-ink">
-          {viewTitle[url.view]}
+          {title}
         </h2>
-        <TaskList query={viewQuery(url.view)} selectedId={null} short onOpen={url.openTask} />
+        <TaskList query={listQuery(url.view, url.stat)} selectedId={null} short onOpen={url.openTask} />
       </section>
 
       <button
@@ -59,6 +66,9 @@ function WideLayout() {
   const bp = useBreakpoint();
   const url = useUrlState();
   const desktop = bp === 'desktop';
+  const { data: stats } = useStats();
+  const title = url.stat ? statTitle[url.stat] : viewTitle[url.view];
+  const dueToday = stats ? ` · ${stats.today} ${stats.today === 1 ? 'task' : 'tasks'} due today` : '';
 
   const panel = url.task && (
     <DetailPanel key={url.task} taskId={url.task} onClose={url.closeTask} onSaved={url.openTask} />
@@ -71,7 +81,7 @@ function WideLayout() {
       <main className="min-w-0 flex-1 p-6 lg:p-8">
         <header className="flex flex-wrap items-center gap-4">
           <Avatar />
-          <Greeting />
+          <Greeting subtitle={dueToday} />
           <div className="ml-auto flex items-center gap-3">
             <Button onClick={() => url.openTask('new')}>
               <Plus size={20} strokeWidth={2} aria-hidden="true" />
@@ -80,11 +90,15 @@ function WideLayout() {
           </div>
         </header>
 
+        <div className="mt-6">
+          <StatCards active={url.stat} onSelect={url.setStat} />
+        </div>
+
         <section aria-labelledby="list-title" className="mt-6 rounded-card bg-surface p-6">
           <h2 id="list-title" className="mb-4 text-[20px] font-extrabold text-ink">
-            {viewTitle[url.view]}
+            {title}
           </h2>
-          <TaskList query={viewQuery(url.view)} selectedId={url.task} onOpen={url.openTask} />
+          <TaskList query={listQuery(url.view, url.stat)} selectedId={url.task} onOpen={url.openTask} />
         </section>
       </main>
 
