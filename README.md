@@ -51,10 +51,9 @@ The client is served as static files and the Express API runs as a Vercel server
 4. Add these **Environment Variables** (Project → Settings → Environment Variables):
    | Name | Value |
    |---|---|
-   | `DATABASE_URL` | Neon **pooled** connection string |
-   | `DIRECT_URL` | Neon **direct / unpooled** connection string |
+   | `DATABASE_URL` | The Neon connection string (the pooled one is fine) |
    | `VITE_USER_NAME` | The display name, e.g. `Abidemi` |
 5. Deploy. The build applies the database migrations automatically (`npm run vercel-build`).
-6. Optional sample data: run `npm run seed` locally with the production `DATABASE_URL`/`DIRECT_URL` in your `.env` (**this replaces all tasks**, so do it only on a fresh database).
+6. Optional sample data: run `npm run seed` locally with the production `DATABASE_URL` in your `.env` (**this replaces all tasks**, so do it only on a fresh database).
 
 Notes: "today" and "overdue" use the visitor's timezone (the client sends its offset). There is no login in v1, so anyone with the URL can edit the tasks.

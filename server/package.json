@@ -13,7 +13,7 @@
     "db:deploy": "dotenv -e ../.env -- prisma migrate deploy",
     "seed": "npm run db:deploy && dotenv -e ../.env -- tsx prisma/seed.ts",
     "postinstall": "prisma generate",
-    "db:deploy:ci": "prisma migrate deploy",
+    "db:deploy:ci": "node scripts/migrate-deploy.mjs",
     "db:generate:ci": "prisma generate"
   },
   "dependencies": {
