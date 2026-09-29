@@ -11,7 +11,7 @@ export function useUrlState() {
   const navigate = useNavigate();
 
   const set = useCallback(
-    (updates: Record<string, string | null>, replace = false) => {
+    (updates: Record<string, string | null>, replace = false, state?: unknown) => {
       setParams(
         (prev) => {
           const next = new URLSearchParams(prev);
@@ -21,7 +21,7 @@ export function useUrlState() {
           }
           return next;
         },
-        { replace },
+        { replace, state },
       );
     },
     [setParams],
@@ -37,9 +37,14 @@ export function useUrlState() {
       set({ [key]: value && !(key === 'sort' && value === 'dueDate') ? value : null }, true),
     clearFilters: () => set(Object.fromEntries(FILTER_KEYS.map((k) => [k, null])), true),
     view: (params.get('view') as View | null) ?? 'dashboard',
-    openTask: (id: string) => set({ task: id }),
-    // Go back when the task page was opened from within the app so Back/Close behave the same.
-    closeTask: () => (window.history.state?.idx > 0 ? navigate(-1) : set({ task: null }, true)),
+    // Opening from the list pushes one history entry (so mobile Back returns to the list). Switching
+    // between tasks, or turning "new" into the saved task, replaces it instead of stacking entries.
+    openTask: (id: string) => {
+      const switching = !!params.get('task');
+      set({ task: id }, switching, switching ? window.history.state?.usr : { fromList: true });
+    },
+    // Undo that one entry if we pushed it; otherwise (deep link) just drop the param.
+    closeTask: () => (window.history.state?.usr?.fromList ? navigate(-1) : set({ task: null }, true)),
     setView: (view: View) => set({ view: view === 'dashboard' ? null : view, stat: null, task: null }, true),
     setStat: (stat: Stat | null) => set({ stat, view: null, task: null }, true),
   };
