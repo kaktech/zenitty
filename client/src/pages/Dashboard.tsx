@@ -143,10 +143,12 @@ function WideLayout() {
       />
 
       <main className="min-w-0 flex-1 p-6 lg:p-8">
-        <header className="flex flex-wrap items-center gap-4">
+        <header className="flex flex-wrap items-center gap-4 lg:flex-nowrap">
           <Avatar />
-          <Greeting subtitle={dueToday} />
-          <div className="ml-auto flex items-center gap-3">
+          <div className="min-w-0 flex-1 basis-40">
+            <Greeting subtitle={dueToday} />
+          </div>
+          <div className="flex shrink-0 items-center gap-3">
             <SearchInput
               className="w-[300px] max-w-full"
               value={url.filters.q}
@@ -164,12 +166,12 @@ function WideLayout() {
         </div>
 
         <section aria-labelledby="list-title" className="mt-6 rounded-card bg-surface p-6">
-          <div className="mb-4 flex flex-wrap items-center gap-x-4 gap-y-3">
-            <h2 id="list-title" className="text-[20px] font-extrabold text-ink">
+          <div className="mb-4 flex flex-wrap items-center gap-x-3 gap-y-3 lg:flex-nowrap">
+            <h2 id="list-title" className="whitespace-nowrap text-[20px] font-extrabold text-ink">
               {title}
             </h2>
             <StatusChips filters={url.filters} onChange={url.setFilter} />
-            <div className="ml-auto flex items-center gap-2">
+            <div className="ml-auto flex shrink-0 items-center gap-2">
               <FilterPopover
                 filters={url.filters}
                 onChange={url.setFilter}
