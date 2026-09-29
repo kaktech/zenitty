@@ -21,6 +21,8 @@ export const notFound: RequestHandler = (_req, _res, next) => {
   next(new HttpError(404, 'Route not found'));
 };
 
+// Express identifies error handlers by their 4-argument signature, so `_next` must stay.
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const errorHandler: ErrorRequestHandler = (err, _req, res, _next) => {
   if (err instanceof ZodError) {
     res.status(400).json({ error: { message: 'Validation failed', details: err.flatten() } });
