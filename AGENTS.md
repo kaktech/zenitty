@@ -3,7 +3,7 @@
 Guidance for AI agents and contributors working in this repo.
 
 ## 1. Project overview
-Zenitty is a full-stack to-do list web app (single user, no auth in v1). The display name ("Johnny") comes from the `VITE_USER_NAME` env var.
+Zenitty is a full-stack to-do list web app (single user, no auth in v1). The display name ("Abidemi") comes from the `VITE_USER_NAME` env var.
 
 **Stack**
 - Monorepo with npm workspaces
@@ -104,7 +104,7 @@ Always compare against `/docs/design/*.png`. Tokens live in `tailwind.config.ts`
 ## 9. Layouts
 **Laptop / desktop (≥1024px)** — three columns at ≥1280px; between 1024 and 1279px the sidebar stays full and Task detail opens as a modal (not enough width for three columns):
 1. Sidebar 248px, white: logo (green rounded square with check + "Zenitty"), nav (Dashboard, All tasks, Today, Completed; active = solid primary bg, white text), "CATEGORIES" with dots + counts, "Dark mode" button pinned to the bottom.
-2. Main: header row (avatar, "Hello, Johnny", date + "· N tasks due today", 300px search, primary "Add task"); 4-col stat grid (150px cards); white "Today's tasks" card with status chips (All / To do / In progress / Completed), Filter and "Sort: Due date"; rows with the selected row having a 2px primary border.
+2. Main: header row (avatar, "Hello, Abidemi", date + "· N tasks due today", 300px search, primary "Add task"); 4-col stat grid (150px cards); white "Today's tasks" card with status chips (All / To do / In progress / Completed), Filter and "Sort: Due date"; rows with the selected row having a 2px primary border.
 3. Task detail panel 360px, white: close button; Task name, Description, Status + Category side by side, 3-button Priority segmented control (selected uses badge colors + darker border), Due date; footer "Save changes" + red-outline trash button.
 
 **Tablet (768–1023px)**: sidebar collapses to icons; Task detail opens as a modal.
