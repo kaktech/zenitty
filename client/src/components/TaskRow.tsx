@@ -1,5 +1,6 @@
 import type { Task } from '../lib/api';
 import { dueText, isOverdue } from '../lib/format';
+import { PriorityBadge } from './Badges';
 import { TaskCheck } from './TaskCheck';
 
 interface Props {
@@ -34,6 +35,7 @@ export function TaskRow({ task, selected, short, onOpen, onToggle }: Props) {
           {task.category} · {dueText(task, short)}
         </span>
       </button>
+      <PriorityBadge priority={task.priority} />
     </li>
   );
 }

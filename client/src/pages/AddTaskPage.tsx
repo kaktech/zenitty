@@ -23,6 +23,7 @@ export function AddTaskPage({ onBack, onCreated }: { onBack: () => void; onCreat
       <div className="flex-1 rounded-card bg-surface p-5">
         <TaskForm
           formId="add-form"
+          layout="page"
           onSubmit={(input) => create.mutate(input, { onSuccess: (t) => onCreated(t.id) })}
         />
         {create.error && (

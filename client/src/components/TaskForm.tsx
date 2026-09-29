@@ -1,7 +1,18 @@
-import { useState, type FormEvent } from 'react';
-import { STATUSES, type Status, type Task, type TaskInput } from '../lib/api';
+import { Calendar } from 'lucide-react';
+import { useId, useState, type FormEvent } from 'react';
+import {
+  CATEGORIES,
+  STATUSES,
+  type Category,
+  type Priority,
+  type Status,
+  type Task,
+  type TaskInput,
+} from '../lib/api';
 import { defaultDueValue, fromInputValue, toInputValue } from '../lib/format';
+import { CategoryPills } from './CategoryPills';
 import { Field, inputClass } from './Field';
+import { PriorityControl } from './PriorityControl';
 
 export const statusLabels: Record<Status, string> = {
   TODO: 'To do',
@@ -13,13 +24,19 @@ interface Props {
   /** Existing task to edit; omit to create. */
   task?: Task;
   formId: string;
+  /** `panel` = laptop/tablet side panel (category select), `page` = mobile full page (category pills). */
+  layout?: 'panel' | 'page';
   onSubmit: (input: TaskInput) => void;
 }
 
-export function TaskForm({ task, formId, onSubmit }: Props) {
+export function TaskForm({ task, formId, layout = 'panel', onSubmit }: Props) {
+  const priorityLabelId = useId();
+  const categoryLabelId = useId();
   const [title, setTitle] = useState(task?.title ?? '');
   const [description, setDescription] = useState(task?.description ?? '');
   const [status, setStatus] = useState<Status>(task?.status ?? 'TODO');
+  const [priority, setPriority] = useState<Priority>(task?.priority ?? 'MEDIUM');
+  const [category, setCategory] = useState<Category>(task?.category ?? 'Work');
   const [due, setDue] = useState(task ? toInputValue(task.dueDate) : defaultDueValue());
   const [error, setError] = useState('');
 
@@ -33,6 +50,8 @@ export function TaskForm({ task, formId, onSubmit }: Props) {
       title: title.trim(),
       description: description.trim() || null,
       status,
+      priority,
+      category,
       dueDate: fromInputValue(due),
     });
   };
@@ -68,35 +87,83 @@ export function TaskForm({ task, formId, onSubmit }: Props) {
           />
         )}
       </Field>
-      {task && (
-        <Field label="Status">
-          {(id) => (
-            <select
-              id={id}
-              className={inputClass}
-              value={status}
-              onChange={(e) => setStatus(e.target.value as Status)}
-            >
-              {STATUSES.map((s) => (
-                <option key={s} value={s}>
-                  {statusLabels[s]}
-                </option>
-              ))}
-            </select>
-          )}
-        </Field>
+      {layout === 'panel' ? (
+        <div className="grid grid-cols-2 gap-3">
+          {task ? <StatusField value={status} onChange={setStatus} /> : <div className="hidden" />}
+          <Field label="Category" className={task ? '' : 'col-span-2'}>
+            {(id) => (
+              <select
+                id={id}
+                className={inputClass}
+                value={category}
+                onChange={(e) => setCategory(e.target.value as Category)}
+              >
+                {CATEGORIES.map((c) => (
+                  <option key={c} value={c}>
+                    {c}
+                  </option>
+                ))}
+              </select>
+            )}
+          </Field>
+        </div>
+      ) : (
+        task && <StatusField value={status} onChange={setStatus} />
       )}
+
+      <div>
+        <p id={priorityLabelId} className="mb-1.5 block text-meta-lg text-ink">
+          Priority
+        </p>
+        <PriorityControl value={priority} onChange={setPriority} labelledBy={priorityLabelId} />
+      </div>
+
+      {layout === 'page' && (
+        <div>
+          <p id={categoryLabelId} className="mb-1.5 block text-meta-lg text-ink">
+            Category
+          </p>
+          <CategoryPills value={category} onChange={setCategory} labelledBy={categoryLabelId} />
+        </div>
+      )}
+
       <Field label="Due date">
         {(id) => (
-          <input
-            id={id}
-            type="datetime-local"
-            className={inputClass}
-            value={due}
-            onChange={(e) => setDue(e.target.value)}
-          />
+          <div className="relative">
+            <input
+              id={id}
+              type="datetime-local"
+              className={`${inputClass} ${layout === 'page' ? 'pl-10' : ''}`}
+              value={due}
+              onChange={(e) => setDue(e.target.value)}
+            />
+            {layout === 'page' && (
+              <Calendar
+                size={18}
+                strokeWidth={2}
+                aria-hidden="true"
+                className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted"
+              />
+            )}
+          </div>
         )}
       </Field>
     </form>
+  );
+}
+
+function StatusField({ value, onChange }: { value: Status; onChange: (s: Status) => void }) {
+  return (
+    <Field label="Status">
+      {(id) => (
+        <select id={id} className={inputClass} value={value} onChange={(e) => onChange(e.target.value as Status)}>
+          {STATUSES.map((s) => (
+            <option key={s} value={s}>
+              {statusLabels[s]}
+            </option>
+          ))}
+        </select>
+      )}
+    </Field>
   );
 }
