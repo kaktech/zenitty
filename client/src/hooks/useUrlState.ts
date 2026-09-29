@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { FILTER_KEYS, parseFilters } from '../lib/filters';
 
 export type View = 'dashboard' | 'all' | 'today' | 'completed';
 export type Stat = 'today' | 'overdue' | 'all' | 'done';
@@ -31,6 +32,10 @@ export function useUrlState() {
     set,
     task: params.get('task'),
     stat: params.get('stat') as Stat | null,
+    filters: parseFilters(params),
+    setFilter: (key: (typeof FILTER_KEYS)[number], value: string | null) =>
+      set({ [key]: value && !(key === 'sort' && value === 'dueDate') ? value : null }, true),
+    clearFilters: () => set(Object.fromEntries(FILTER_KEYS.map((k) => [k, null])), true),
     view: (params.get('view') as View | null) ?? 'dashboard',
     openTask: (id: string) => set({ task: id }),
     // Go back when the task page was opened from within the app so Back/Close behave the same.
