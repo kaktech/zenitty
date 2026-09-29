@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { startOfToday, startOfTomorrow, weekAgo } from '../lib/dates.js';
+import { startOfToday, startOfTomorrow, tzOffset, weekAgo } from '../lib/dates.js';
 import { asyncHandler } from '../lib/errors.js';
 import { prisma } from '../lib/prisma.js';
 import { categories } from '../lib/schemas.js';
@@ -8,10 +8,11 @@ export const statsRouter = Router();
 
 statsRouter.get(
   '/stats',
-  asyncHandler(async (_req, res) => {
-    const today = startOfToday();
+  asyncHandler(async (req, res) => {
+    const offset = tzOffset(req);
+    const today = startOfToday(offset);
     const [todayCount, overdue, all, completedThisWeek] = await Promise.all([
-      prisma.task.count({ where: { dueDate: { gte: today, lt: startOfTomorrow() } } }),
+      prisma.task.count({ where: { dueDate: { gte: today, lt: startOfTomorrow(offset) } } }),
       prisma.task.count({ where: { dueDate: { lt: today }, status: { not: 'COMPLETED' } } }),
       prisma.task.count(),
       prisma.task.count({ where: { completedAt: { gte: weekAgo() } } }),

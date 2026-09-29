@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import type { Prisma, Task } from '@prisma/client';
-import { startOfToday, startOfTomorrow, weekAgo } from '../lib/dates.js';
+import { startOfToday, startOfTomorrow, tzOffset, weekAgo } from '../lib/dates.js';
 import { asyncHandler, HttpError } from '../lib/errors.js';
 import { prisma } from '../lib/prisma.js';
 import { createTaskSchema, listQuerySchema, updateTaskSchema } from '../lib/schemas.js';
@@ -31,11 +31,15 @@ tasksRouter.get(
     if (q.priority) where.priority = q.priority;
     if (q.category) where.category = q.category;
     if (q.search) {
-      where.OR = [{ title: { contains: q.search } }, { description: { contains: q.search } }];
+      where.OR = [
+        { title: { contains: q.search, mode: 'insensitive' } },
+        { description: { contains: q.search, mode: 'insensitive' } },
+      ];
     }
 
-    const today = startOfToday();
-    const tomorrow = startOfTomorrow();
+    const offset = tzOffset(req);
+    const today = startOfToday(offset);
+    const tomorrow = startOfTomorrow(offset);
     const dueToday = { dueDate: { gte: today, lt: tomorrow } };
     const overdue = { dueDate: { lt: today }, status: { not: 'COMPLETED' as const } };
     const and: Prisma.TaskWhereInput[] = [];

@@ -12,7 +12,9 @@
     "db:migrate": "dotenv -e ../.env -- prisma migrate dev",
     "db:deploy": "dotenv -e ../.env -- prisma migrate deploy",
     "seed": "npm run db:deploy && dotenv -e ../.env -- tsx prisma/seed.ts",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "db:deploy:ci": "prisma migrate deploy",
+    "db:generate:ci": "prisma generate"
   },
   "dependencies": {
     "@prisma/client": "^6.19.3",

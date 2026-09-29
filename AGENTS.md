@@ -9,12 +9,14 @@ Zenitty is a full-stack to-do list web app (single user, no auth in v1). The dis
 - Monorepo with npm workspaces
 - `/client`: React 18 + Vite + TypeScript + Tailwind CSS, TanStack Query, React Router, lucide-react
 - `/server`: Node.js + Express + TypeScript, Zod validation
-- Database: SQLite via Prisma (kept Prisma-only so it can move to PostgreSQL later)
+- Database: PostgreSQL via Prisma (local: `docker compose up -d`; hosted: Neon)
+- Hosting: Vercel — static client + Express as a serverless function (`api/index.ts`, see `vercel.json`)
 
 ## 2. Folder map
 ```
 /client            React app (src/components, src/pages, src/hooks, src/lib)
-/server            Express API (src/routes, src/lib) and prisma/ (schema, migrations, seed)
+/server            Express API (src/app.ts, src/routes, src/lib) and prisma/ (schema, migrations, seed)
+/api               Vercel serverless entry that re-exports the Express app
 /docs/design       Mockup PNGs — source of truth for the UI
 .env.example       Environment variables (copy to .env)
 AGENTS.md          This file
@@ -22,6 +24,7 @@ AGENTS.md          This file
 
 ## 3. Commands
 ```bash
+docker compose up -d              # local Postgres (or use a Neon URL)
 npm install                       # install all workspaces
 cp .env.example .env              # first time only
 npm run seed                      # create tables + sample data (server/prisma)
@@ -50,7 +53,7 @@ npm run lint                      # lint both workspaces
 | completedAt | DateTime, nullable |
 | createdAt, updatedAt | DateTime |
 
-Enums are Prisma enums (supported on SQLite since Prisma 6.2) and are also validated with Zod.
+Enums are native Postgres enums and are also validated with Zod.
 
 ## URL state
 `task` (open task id or `new`), `view` (all | today | completed), `stat` (today | overdue | all | done), `q`, `status`, `priority`, `category`, `sort`. Keep filter state in the URL. History: opening a task from the list pushes one entry; switching tasks replaces it; `closeTask` undoes the push.
@@ -63,6 +66,8 @@ Enums are Prisma enums (supported on SQLite since Prisma 6.2) and are also valid
 - Status codes: 200, 201, 204, 400 (validation), 404, 500.
 - Error shape: `{ error: { message, details? } }`.
 - Completing a task sets `completedAt`; un-completing clears it.
+- "Today"/"overdue" use the client's timezone via the `X-TZ-Offset` header (minutes, `Date#getTimezoneOffset`).
+- Search is case-insensitive.
 
 ## 7. Git workflow
 - Default branch `main`. Conventional Commits (`feat:`, `fix:`, `chore:`, `docs:`, `refactor:`, `style:`). Small commits.
@@ -123,4 +128,4 @@ Always compare against `/docs/design/*.png`. Tokens live in `tailwind.config.ts`
 ## 11. Roadmap / not in v1
 - Subtasks
 - Auth / multi-user
-- PostgreSQL deployment
+- Auth on the hosted deployment (currently open to anyone with the URL)
