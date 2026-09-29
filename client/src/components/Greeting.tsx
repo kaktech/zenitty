@@ -1,6 +1,6 @@
 import { formatHeaderDate } from '../lib/format';
 
-export const USER_NAME: string = import.meta.env.VITE_USER_NAME ?? 'Johnny';
+export const USER_NAME: string = import.meta.env.VITE_USER_NAME ?? 'Abidemi';
 
 export function Avatar() {
   return (
