@@ -15,7 +15,7 @@ interface Handlers {
 
 export function StatusChips({ filters, onChange }: Handlers) {
   return (
-    <div role="group" aria-label="Filter by status" className="flex flex-wrap gap-2">
+    <div role="group" aria-label="Filter by status" className="flex flex-wrap gap-2 lg:flex-nowrap">
       <Chip selected={!filters.status} onClick={() => onChange('status', null)}>
         All
       </Chip>

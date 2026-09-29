@@ -124,7 +124,7 @@ function MobileHome() {
 function WideLayout() {
   const bp = useBreakpoint();
   const { url, title, query, onClearFilters } = useListState();
-  const desktop = bp === 'desktop';
+  const inlinePanel = bp === 'desktop';
   const { data: stats } = useStats();
   const dueToday = stats ? ` · ${stats.today} ${stats.today === 1 ? 'task' : 'tasks'} due today` : '';
 
@@ -137,20 +137,20 @@ function WideLayout() {
       <Sidebar
         view={url.view}
         onView={url.setView}
-        collapsed={!desktop}
+        collapsed={bp === 'tablet'}
         category={url.filters.category}
         onCategory={(c) => url.setFilter('category', c)}
       />
 
       <main className="min-w-0 flex-1 p-6 lg:p-8">
-        <header className="flex flex-wrap items-center gap-4 lg:flex-nowrap">
+        <header className="flex flex-wrap items-center gap-x-4 gap-y-3">
           <Avatar />
-          <div className="min-w-0 flex-1 basis-40">
+          <div className="min-w-[200px] flex-1">
             <Greeting subtitle={dueToday} />
           </div>
-          <div className="flex shrink-0 items-center gap-3">
+          <div className="ml-auto flex items-center gap-3 max-sm:w-full">
             <SearchInput
-              className="w-[300px] max-w-full"
+              className="w-[300px] max-w-full max-sm:flex-1"
               value={url.filters.q}
               onChange={(v) => url.setFilter('q', v || null)}
             />
@@ -166,7 +166,7 @@ function WideLayout() {
         </div>
 
         <section aria-labelledby="list-title" className="mt-6 rounded-card bg-surface p-6">
-          <div className="mb-4 flex flex-wrap items-center gap-x-3 gap-y-3 lg:flex-nowrap">
+          <div className="mb-4 flex flex-wrap items-center gap-x-3 gap-y-3">
             <h2 id="list-title" className="whitespace-nowrap text-[20px] font-extrabold text-ink">
               {title}
             </h2>
@@ -184,7 +184,7 @@ function WideLayout() {
         </section>
       </main>
 
-      {desktop ? (
+      {inlinePanel ? (
         <aside
           aria-label="Task detail"
           className="sticky top-0 h-screen w-[360px] shrink-0 overflow-y-auto border-l border-line bg-surface p-7"

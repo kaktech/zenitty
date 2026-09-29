@@ -34,16 +34,16 @@ export function StatCards({ active, onSelect }: Props) {
       {cards.map((c) => {
         const selected = active === c.stat;
         return (
-          <li key={c.stat}>
+          <li key={c.stat} className="min-w-0">
             <button
               type="button"
               aria-pressed={selected}
               onClick={() => onSelect(selected ? null : c.stat)}
-              className={`flex h-[118px] w-full flex-col justify-between rounded-card border-2 p-4 text-left transition-transform hover:-translate-y-0.5 lg:h-[150px] lg:p-5 ${c.className} ${
+              className={`flex h-[118px] w-full flex-col justify-between rounded-card border-2 p-4 text-left min-w-0 transition-transform hover:-translate-y-0.5 lg:h-[150px] lg:p-5 ${c.className} ${
                 selected ? 'border-primary' : 'border-transparent'
               }`}
             >
-              <span className="text-[14px] font-extrabold">
+              <span className="whitespace-normal text-[14px] font-extrabold leading-tight">
                 <span className="lg:hidden">{c.short}</span>
                 <span className="max-lg:hidden">{c.label}</span>
               </span>
