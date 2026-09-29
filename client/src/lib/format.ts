@@ -7,19 +7,24 @@ const dayDiff = (a: Date, b: Date) =>
 export const formatTime = (iso: string) =>
   new Date(iso).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
 
-const formatDayMonth = (d: Date) => d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-export const formatDay = (iso: string) =>
-  new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+// Built by hand: Intl's en-GB abbreviates September as "Sept", but the design uses "Sep".
+const formatDayMonth = (d: Date) => `${d.getDate()} ${MONTHS[d.getMonth()]}`;
+
+export const formatDay = (iso: string) => {
+  const d = new Date(iso);
+  return `${formatDayMonth(d)} ${d.getFullYear()}`;
+};
 
 export const formatDateTime = (iso: string) => `${formatDay(iso)}, ${formatTime(iso)}`;
 
-export const formatHeaderDate = (short = false) =>
-  new Date().toLocaleDateString('en-GB', {
-    weekday: 'long',
-    day: 'numeric',
-    month: short ? 'short' : 'long',
-  });
+export const formatHeaderDate = (short = false) => {
+  const d = new Date();
+  const weekday = d.toLocaleDateString('en-GB', { weekday: 'long' });
+  const month = short ? MONTHS[d.getMonth()] : d.toLocaleDateString('en-GB', { month: 'long' });
+  return `${weekday}, ${d.getDate()} ${month}`;
+};
 
 export const isOverdue = (t: Task) =>
   t.status !== 'COMPLETED' && !!t.dueDate && dayDiff(new Date(t.dueDate), new Date()) < 0;
