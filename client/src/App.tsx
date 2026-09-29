@@ -4,7 +4,7 @@ import { ToastProvider } from './components/Toast';
 import Dashboard from './pages/Dashboard';
 
 const queryClient = new QueryClient({
-  defaultOptions: { queries: { staleTime: 15_000, refetchOnWindowFocus: false } },
+  defaultOptions: { queries: { retry: 1, staleTime: 15_000, refetchOnWindowFocus: false } },
 });
 
 export default function App() {
