@@ -7,7 +7,7 @@ import { inputClass } from '../components/Field';
 import { ErrorState, ListSkeleton } from '../components/States';
 import { statusLabels, TaskForm } from '../components/TaskForm';
 import { useDeleteTask, useTask, useUpdateTask } from '../hooks/useTasks';
-import { STATUSES, type Status } from '../lib/api';
+import { STATUSES, type Status, type Task } from '../lib/api';
 import { dueText, formatDateTime, formatDay } from '../lib/format';
 
 export function TaskDetailPage({ id, onBack }: { id: string; onBack: () => void }) {
@@ -70,7 +70,7 @@ export function TaskDetailPage({ id, onBack }: { id: string; onBack: () => void 
         <>
           <section className="rounded-card bg-stat-today p-5">
             <p className="text-meta-lg text-stat-today-fg">
-              {task.category} · Due {task.dueDate ? dueText({ ...task, status: 'TODO' }).toLowerCase() : 'never'}
+              {task.category} · {heroDue(task)}
             </p>
             <h2 className="mt-1.5 text-[22px] font-extrabold leading-tight text-ink">{task.title}</h2>
             {task.description && <p className="mt-2 text-[14px] font-semibold text-ink-2">{task.description}</p>}
@@ -138,6 +138,13 @@ export function TaskDetailPage({ id, onBack }: { id: string; onBack: () => void 
       )}
     </div>
   );
+}
+
+/** "Due today, 9:45 AM" / "Overdue, yesterday" / "No due date". */
+function heroDue(task: Task) {
+  if (!task.dueDate) return 'No due date';
+  const text = dueText({ ...task, status: 'TODO' });
+  return text.startsWith('Overdue') ? text : `Due ${text.charAt(0).toLowerCase()}${text.slice(1)}`;
 }
 
 function Row({ label, children, last }: { label: string; children: ReactNode; last?: boolean }) {
