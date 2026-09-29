@@ -13,6 +13,9 @@ function sortTasks(tasks: Task[], sort: 'dueDate' | 'priority' | 'createdAt') {
   const byDue = (a: Task, b: Task) =>
     (a.dueDate?.getTime() ?? Infinity) - (b.dueDate?.getTime() ?? Infinity);
   return [...tasks].sort((a, b) => {
+    // Finished tasks always sink below open ones, like the mockup.
+    const done = Number(a.status === 'COMPLETED') - Number(b.status === 'COMPLETED');
+    if (done) return done;
     if (sort === 'createdAt') return b.createdAt.getTime() - a.createdAt.getTime();
     if (sort === 'priority') return priorityRank[a.priority] - priorityRank[b.priority] || byDue(a, b);
     return byDue(a, b);

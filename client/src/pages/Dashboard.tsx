@@ -1,4 +1,4 @@
-import { Plus, SlidersHorizontal } from 'lucide-react';
+import { MousePointerClick, Plus, SlidersHorizontal } from 'lucide-react';
 import { useState } from 'react';
 import { Button, IconButton } from '../components/Button';
 import { DetailPanel } from '../components/DetailPanel';
@@ -189,7 +189,15 @@ function WideLayout() {
           aria-label="Task detail"
           className="sticky top-0 h-screen w-[360px] shrink-0 overflow-y-auto border-l border-line bg-surface p-7"
         >
-          {panel || <p className="mt-16 text-center text-meta-lg text-muted">Select a task to see its details.</p>}
+          {panel || (
+            <div className="mt-24 flex flex-col items-center gap-3 px-4 text-center">
+              <span className="flex h-14 w-14 items-center justify-center rounded-full bg-subtle text-muted">
+                <MousePointerClick size={26} strokeWidth={2} aria-hidden="true" />
+              </span>
+              <p className="text-title text-ink">No task selected</p>
+              <p className="text-meta-lg text-muted">Pick a task from the list to view or edit it.</p>
+            </div>
+          )}
         </aside>
       ) : (
         url.task && (

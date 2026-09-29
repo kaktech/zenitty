@@ -18,7 +18,7 @@ export function TaskCheck({ done, onToggle, title }: Props) {
       className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full"
     >
       <span
-        className={`flex h-[22px] w-[22px] items-center justify-center rounded-full border-2 border-primary ${
+        className={`flex h-[22px] w-[22px] items-center justify-center rounded-full border-2 border-primary transition-colors ${
           done ? 'bg-primary text-primary-fg' : ''
         }`}
       >

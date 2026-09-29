@@ -39,7 +39,7 @@ export function StatCards({ active, onSelect }: Props) {
               type="button"
               aria-pressed={selected}
               onClick={() => onSelect(selected ? null : c.stat)}
-              className={`flex h-[118px] w-full flex-col justify-between rounded-card border-2 p-4 text-left lg:h-[150px] lg:p-5 ${c.className} ${
+              className={`flex h-[118px] w-full flex-col justify-between rounded-card border-2 p-4 text-left transition-transform hover:-translate-y-0.5 lg:h-[150px] lg:p-5 ${c.className} ${
                 selected ? 'border-primary' : 'border-transparent'
               }`}
             >
@@ -47,8 +47,8 @@ export function StatCards({ active, onSelect }: Props) {
                 <span className="lg:hidden">{c.short}</span>
                 <span className="max-lg:hidden">{c.label}</span>
               </span>
-              <span className="text-stat text-ink lg:text-stat-lg" aria-live="polite">
-                {data ? data[c.key] : isError ? '–' : <span className="opacity-40">…</span>}
+              <span className="text-stat text-ink lg:text-stat-lg">
+                {data ? data[c.key] : isError ? '–' : <span className="inline-block h-[0.8em] w-[1.2em] animate-pulse rounded-ctl bg-current opacity-20" />}
               </span>
             </button>
           </li>

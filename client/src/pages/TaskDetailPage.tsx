@@ -6,6 +6,7 @@ import { ConfirmDialog } from '../components/ConfirmDialog';
 import { inputClass } from '../components/Field';
 import { ErrorState, ListSkeleton } from '../components/States';
 import { statusLabels, TaskForm } from '../components/TaskForm';
+import { useToast } from '../components/Toast';
 import { useDeleteTask, useTask, useUpdateTask } from '../hooks/useTasks';
 import { STATUSES, type Status, type Task } from '../lib/api';
 import { dueText, formatDateTime, formatDay } from '../lib/format';
@@ -14,6 +15,7 @@ export function TaskDetailPage({ id, onBack }: { id: string; onBack: () => void 
   const { data: task, isPending, isError, error, refetch } = useTask(id);
   const update = useUpdateTask();
   const remove = useDeleteTask();
+  const toast = useToast();
   const [editing, setEditing] = useState(false);
   const [confirming, setConfirming] = useState(false);
 
@@ -49,7 +51,15 @@ export function TaskDetailPage({ id, onBack }: { id: string; onBack: () => void 
               formId="edit-form"
               layout="page"
               task={task}
-              onSubmit={(input) => update.mutate({ id: task.id, patch: input }, { onSuccess: () => setEditing(false) })}
+              onSubmit={(input) => update.mutate(
+                  { id: task.id, patch: input },
+                  {
+                    onSuccess: () => {
+                      setEditing(false);
+                      toast('Changes saved');
+                    },
+                  },
+                )}
             />
             {update.error && (
               <p role="alert" className="mt-3 text-meta-lg text-danger">
@@ -133,7 +143,15 @@ export function TaskDetailPage({ id, onBack }: { id: string; onBack: () => void 
           confirmLabel="Delete"
           busy={remove.isPending}
           onCancel={() => setConfirming(false)}
-          onConfirm={() => remove.mutate(task.id, { onSuccess: onBack, onSettled: () => setConfirming(false) })}
+          onConfirm={() =>
+            remove.mutate(task.id, {
+              onSuccess: () => {
+                toast('Task deleted');
+                onBack();
+              },
+              onSettled: () => setConfirming(false),
+            })
+          }
         />
       )}
     </div>

@@ -39,7 +39,7 @@ export function SortSelect({ filters, onChange, className = '' }: Handlers & { c
         id={id}
         value={filters.sort}
         onChange={(e) => onChange('sort', e.target.value)}
-        className={`${inputClass} appearance-none pr-9 lg:min-h-[38px] lg:w-auto lg:rounded-ctl lg:py-0 lg:pl-3 lg:text-[13px]`}
+        className={`${inputClass} appearance-none pr-9 lg:w-auto lg:pl-3 lg:text-[13px]`}
       >
         {(Object.keys(sortLabels) as Sort[]).map((s) => (
           <option key={s} value={s}>
@@ -120,7 +120,7 @@ export function FilterPopover({ filters, onChange, onClear }: Handlers & { onCle
         aria-expanded={open}
         aria-haspopup="true"
         onClick={() => setOpen((o) => !o)}
-        className="lg:min-h-[38px] lg:px-3 lg:text-[13px]"
+        className="lg:px-3 lg:text-[13px]"
       >
         <FilterIcon size={16} strokeWidth={2} aria-hidden="true" />
         Filter{active > 0 && ` (${active})`}

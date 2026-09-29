@@ -1,10 +1,13 @@
 import { ChevronLeft } from 'lucide-react';
 import { Button } from '../components/Button';
 import { TaskForm } from '../components/TaskForm';
+import { useToast } from '../components/Toast';
 import { useCreateTask } from '../hooks/useTasks';
+import { dueText } from '../lib/format';
 
 export function AddTaskPage({ onBack, onCreated }: { onBack: () => void; onCreated: (id: string) => void }) {
   const create = useCreateTask();
+  const toast = useToast();
 
   return (
     <div className="flex min-h-screen flex-col gap-4 bg-page p-5">
@@ -24,7 +27,12 @@ export function AddTaskPage({ onBack, onCreated }: { onBack: () => void; onCreat
         <TaskForm
           formId="add-form"
           layout="page"
-          onSubmit={(input) => create.mutate(input, { onSuccess: (t) => onCreated(t.id) })}
+          onSubmit={(input) => create.mutate(input, {
+              onSuccess: (t) => {
+                toast(`Task created · ${dueText(t)}`);
+                onCreated(t.id);
+              },
+            })}
         />
         {create.error && (
           <p role="alert" className="mt-3 text-meta-lg text-danger">

@@ -35,7 +35,7 @@ npm run lint                      # lint both workspaces
 - Functional components and hooks only.
 - Tailwind only. Use the theme tokens from `client/tailwind.config.ts` (backed by CSS variables in `client/src/index.css`). **Never hardcode colors in components.**
 - Server input is validated with Zod; errors use `{ error: { message, details? } }`.
-- Buttons never wrap text; touch targets are at least 44px; every input has a label; focus rings are visible.
+- Buttons never wrap text; touch targets are at least 44px everywhere (including laptop chips and toolbar); every input has a label; focus rings are visible.
 
 ## 5. Data model (Prisma `Task`)
 | Field | Type |
@@ -53,7 +53,7 @@ npm run lint                      # lint both workspaces
 Enums are Prisma enums (supported on SQLite since Prisma 6.2) and are also validated with Zod.
 
 ## URL state
-`task` (open task id or `new`), `view` (all | today | completed), `stat` (today | overdue | all | done), `q`, `status`, `priority`, `category`, `sort`. Keep filter state in the URL.
+`task` (open task id or `new`), `view` (all | today | completed), `stat` (today | overdue | all | done), `q`, `status`, `priority`, `category`, `sort`. Keep filter state in the URL. History: opening a task from the list pushes one entry; switching tasks replaces it; `closeTask` undoes the push.
 
 ## 6. API contract (`/api`)
 - `GET /tasks?search=&status=&priority=&category=&sort=dueDate|priority|createdAt` (plus dashboard helpers `due=today|overdue|todayAndOverdue` and `completed=week`)

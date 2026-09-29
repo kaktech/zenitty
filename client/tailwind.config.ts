@@ -67,6 +67,11 @@ export default {
         'meta-lg': ['13px', { lineHeight: '1.3', fontWeight: '700' }],
         label: ['12px', { lineHeight: '1', fontWeight: '800', letterSpacing: '1px' }],
       },
+      animation: {
+        toast: 'toast-in 0.2s ease-out',
+        sheet: 'sheet-in 0.22s ease-out',
+        fade: 'fade-in 0.2s ease-out',
+      },
       screens: { md: '768px', lg: '1024px' },
     },
   },

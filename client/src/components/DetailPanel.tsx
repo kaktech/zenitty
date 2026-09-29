@@ -1,9 +1,11 @@
 import { Trash2, X } from 'lucide-react';
 import { useState } from 'react';
 import { useCreateTask, useDeleteTask, useTask, useUpdateTask } from '../hooks/useTasks';
+import { dueText } from '../lib/format';
 import { Button, IconButton } from './Button';
 import { ConfirmDialog } from './ConfirmDialog';
 import { ErrorState, ListSkeleton } from './States';
+import { useToast } from './Toast';
 import { TaskForm } from './TaskForm';
 
 interface Props {
@@ -21,7 +23,7 @@ export function DetailPanel({ taskId, onClose, onSaved }: Props) {
   const update = useUpdateTask();
   const remove = useDeleteTask();
   const [confirming, setConfirming] = useState(false);
-  const [saved, setSaved] = useState(false);
+  const toast = useToast();
 
   const saving = create.isPending || update.isPending;
   const failure = create.error ?? update.error ?? remove.error;
@@ -36,9 +38,16 @@ export function DetailPanel({ taskId, onClose, onSaved }: Props) {
         formId="detail-form"
         task={isNew ? undefined : task}
         onSubmit={(input) => {
-          setSaved(false);
-          if (isNew) create.mutate(input, { onSuccess: (t) => onSaved(t.id) });
-          else update.mutate({ id: taskId, patch: input }, { onSuccess: () => setSaved(true) });
+          if (isNew) {
+            create.mutate(input, {
+              onSuccess: (t) => {
+                toast(`Task created · ${dueText(t)}`);
+                onSaved(t.id);
+              },
+            });
+          } else {
+            update.mutate({ id: taskId, patch: input }, { onSuccess: () => toast('Changes saved') });
+          }
         }}
       />
     );
@@ -58,11 +67,6 @@ export function DetailPanel({ taskId, onClose, onSaved }: Props) {
       {failure && (
         <p role="alert" className="mt-3 text-meta-lg text-danger">
           {failure.message}
-        </p>
-      )}
-      {saved && !failure && (
-        <p role="status" className="mt-3 text-meta-lg text-primary-soft">
-          Changes saved
         </p>
       )}
 
@@ -91,7 +95,15 @@ export function DetailPanel({ taskId, onClose, onSaved }: Props) {
           confirmLabel="Delete"
           busy={remove.isPending}
           onCancel={() => setConfirming(false)}
-          onConfirm={() => remove.mutate(task.id, { onSuccess: onClose, onSettled: () => setConfirming(false) })}
+          onConfirm={() =>
+            remove.mutate(task.id, {
+              onSuccess: () => {
+                toast('Task deleted');
+                onClose();
+              },
+              onSettled: () => setConfirming(false),
+            })
+          }
         />
       )}
     </div>
