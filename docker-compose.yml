@@ -1,0 +1,14 @@
+# Local Postgres for development: `docker compose up -d`
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: zenitty
+      POSTGRES_PASSWORD: zenitty
+      POSTGRES_DB: zenitty
+    ports:
+      - '5432:5432'
+    volumes:
+      - zenitty-db:/var/lib/postgresql/data
+volumes:
+  zenitty-db:
